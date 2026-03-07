@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- =======================================================================
+         >>> CO1: INTERNET FUNDAMENTALS & HTML STRUCTURE <<<
+         Demonstrating proper document structure, meta tags for SEO, and linking.
+         ======================================================================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real Time Password Security Analyzer - Evaluate password strength.">
+    <title>Real Time Password Security Analyzer</title>
+    
+    <!-- Google Fonts for sleek, premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =======================================================================
+           >>> CO1 & CO2: CSS FUNDAMENTALS & ADVANCED LAYOUTS <<<
+           Demonstrating custom properties (variables), Flexbox, CSS Grid, 
+           Keyframe Animations, and Responsive Media Queries.
+           ======================================================================= */
+        :root {
+            --bg-color: #050505;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff003c;
+            --neon-green: #0aff0a;
+            --neon-yellow: #fcee0a;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --font-main: 'Montserrat', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex; /* CO2: Flexbox Layout */
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .w-100 { width: 100%; }
+        .mb-3 { margin-bottom: 1rem; }
+        .d-flex { display: flex; } /* CO2: Flexbox Utility */
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        }
+
+        /* CO2: CSS Animations (@keyframes) */
+        .scanline {
+            width: 100%; height: 100px; z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 243, 255, 0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1; position: fixed; bottom: 100%;
+            animation: scanline 10s linear infinite; pointer-events: none;
+        }
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
+
+        header {
+            margin: 30px 0 20px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2;
+            position: relative; width: 100%; max-width: 800px;
+        }
+
+        main {
+            width: calc(100% - 20px);
+            max-width: 600px;
+            display: grid; /* CO2: CSS Grid Layout */
+            gap: 20px;
+            z-index: 2;
+        }
+
+        /* CO1: Advanced UI Styling (Glassmorphism & Box Shadows) */
+        @keyframes neon-breathe {
+            0% { box-shadow: 0 4px 20px rgba(188, 19, 254, 0.15); border-color: rgba(188, 19, 254, 0.3); }
+            50% { box-shadow: 0 4px 35px rgba(0, 243, 255, 0.3); border-color: rgba(0, 243, 255, 0.5); }
+            100% { box-shadow: 0 4px 20px rgba(188, 19, 254, 0.15); border-color: rgba(188, 19, 254, 0.3); }
+        }
+
+        .glass-card {
+            background: var(--glass-bg); 
+            backdrop-filter: blur(10px);
+            border-radius: 12px; 
+            padding: 25px;
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            animation: neon-breathe 6s infinite ease-in-out;
+            transition: transform 0.3s ease;
+        }
+        .glass-card:hover { transform: translateY(-2px); }
+
+        @keyframes text-glitch {
+            0%, 90% { text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-cyan); transform: translate(0); }
+            92% { text-shadow: -3px 2px var(--neon-red), 2px -2px var(--neon-cyan); transform: translate(-2px, 1px); }
+            94% { text-shadow: 2px -3px var(--neon-purple), -2px 2px var(--neon-cyan); transform: translate(2px, -1px); }
+            96% { text-shadow: -2px -2px var(--neon-red), 3px 2px var(--neon-purple); transform: translate(-1px, 2px); }
+            98% { text-shadow: 2px 3px var(--neon-cyan), -2px -2px var(--neon-red); transform: translate(1px, -2px); }
+            100% { text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-cyan); transform: translate(0); }
+        }
+
+        .glitch-text {
+            font-size: 1.8rem; font-weight: 800; text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 2px;
+            color: #fff;
+            animation: text-glitch 4s infinite;
+        }
+
+        .form-group { position: relative; }
+
+        input[type="text"], input[type="password"], select {
+            width: 100%; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--glass-border);
+            border-radius: 6px; padding: 12px; padding-right: 40px; color: var(--neon-cyan); font-size: 1.1rem; outline: none;
+            transition: all 0.3s ease; font-family: var(--font-mono); letter-spacing: 1px;
+        }
+        /* CO1: Pseudo-classes (:focus, :hover) */
+        input:focus, select:focus { 
+            border-color: var(--neon-cyan); 
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 8px rgba(0, 243, 255, 0.2); 
+        }
+
+        .eye-icon {
+            position: absolute; right: 15px; bottom: 12px; cursor: pointer;
+            color: var(--text-dim); transition: color 0.3s ease, text-shadow 0.3s ease; z-index: 5;
+        }
+        .eye-icon:hover { color: var(--neon-cyan); filter: drop-shadow(0 0 5px var(--neon-cyan)); }
+
+        .progress-bg {
+            width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+        }
+        .progress-bar {
+            height: 100%; width: 0%; background: var(--neon-red);
+            transition: width 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .criteria-list {
+            list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; color: var(--text-dim);
+        }
+        .criteria-item.valid { 
+            color: var(--neon-green); text-shadow: 0 0 8px rgba(10, 255, 10, 0.6); 
+        }
+
+        .advanced-metrics {
+            background: rgba(0, 0, 0, 0.4); border: 1px dashed rgba(0, 243, 255, 0.2);
+            border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 0.85rem;
+            display: flex; flex-direction: column; gap: 10px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .metric-row { display: flex; justify-content: space-between; align-items: center; }
+        .metric-label { color: var(--text-dim); }
+        .metric-value { font-family: var(--font-mono); font-weight: bold; }
+
+        .btn {
+            padding: 12px; border: 1px solid var(--neon-cyan); border-radius: 6px; background: rgba(0, 243, 255, 0.1); 
+            color: var(--neon-cyan); cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .btn:hover { 
+            background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); 
+        }
+
+        /* CO2: HTML Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        th, td { border: 1px solid var(--glass-border); padding: 8px; text-align: left; }
+        th { color: var(--neon-purple); text-shadow: 0 0 5px rgba(188, 19, 254, 0.4); }
+        tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
+
+        .api-section { 
+            text-align: left; padding: 15px 20px; border-left: 4px solid var(--neon-cyan);
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.1) 0%, rgba(0,0,0,0) 100%);
+            position: relative;
+        }
+        .api-section::before {
+            content: '[ SECURE TERMINAL ]'; display: block; color: var(--neon-purple);
+            font-family: var(--font-mono); font-size: 0.7rem; margin-bottom: 10px;
+            letter-spacing: 2px; text-shadow: 0 0 5px rgba(188, 19, 254, 0.5);
+        }
+        #apiQuote {
+            color: var(--neon-cyan); font-family: var(--font-mono); font-size: 0.85rem;
+            line-height: 1.6; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4); min-height: 40px; 
+        }
+        .cursor {
+            display: inline-block; width: 8px; height: 1.2em; background-color: var(--neon-cyan);
+            vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 5px;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        footer { margin-top: 40px; text-align: center; padding-bottom: 20px; z-index: 2; }
+        footer a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; transition: all 0.3s ease; }
+        footer a:hover { color: var(--neon-cyan); }
+
+        /* CO2: Responsive Web Design using Media Queries */
+        @media (max-width: 500px) {
+            .criteria-list { grid-template-columns: 1fr; }
+            .glitch-text { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanline"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- =======================================================================
+         >>> CO2: SEMANTIC TAGS, FORMS & TABLES <<<
+         Using proper semantic tags (<header>, <main>, <section>, <article>, <footer>)
+         ======================================================================= -->
+    <header>
+        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg width='100' height='100' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2L2 7L12 12L22 7L12 2Z' stroke='%2300f3ff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M2 17L12 22L22 17' stroke='%23bc13fe' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M2 12L12 17L22 12' stroke='%2300f3ff' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E" alt="Cyber Matrix Logo" aria-label="Main Application Logo" loading="lazy" width="70" height="70" style="filter: drop-shadow(0 0 12px var(--neon-cyan)); margin-bottom: 5px;">
+        <h1 class="glitch-text">REAL TIME PASSWORD SECURITY ANALYZER</h1>
+    </header>
+
+    <main>
+        <section class="glass-card">
+            <!-- CO2: HTML5 Forms and Client-Side Validation (required, pattern) -->
+            <form id="analyzerForm" class="w-100">
+                <div class="form-group mb-3">
+                    <label for="username" style="font-size: 0.8rem; color: var(--text-dim);">Account Identifier</label>
+                    <input type="text" id="username" placeholder="Username (Alphanumeric only)" required pattern="[A-Za-z0-9_]+" aria-label="Username">
+                </div>
+                
+                <div class="form-group mb-3 d-flex" style="gap: 10px;">
+                    <!-- CO1: Multimedia integration (Audio) -->
+                    <audio id="successSound" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" preload="none"></audio>
+                    
+                    <div style="flex:1;">
+                        <label for="accType" style="font-size: 0.8rem; color: var(--text-dim);">Environment Type</label>
+                        <select id="accType" required>
+                            <option value="">Select Target...</option>
+                            <option value="personal">Personal Account</option>
+                            <option value="enterprise">Enterprise Server</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="passwordInput" style="font-size: 0.8rem; color: var(--text-dim);">Secret Credential</label>
+                    <div style="position: relative;">
+                        <input type="password" id="passwordInput" placeholder="Type password here..." required autocomplete="off">
+                        <div class="eye-icon" id="togglePass" title="Toggle Visibility">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="strength-meter mb-3">
+                    <div class="d-flex" style="justify-content: space-between;">
+                        <span>Security Status:</span>
+                        <strong id="statusText" style="color: var(--neon-red);">AWAITING INPUT</strong>
+                    </div>
+                    <div class="progress-bg"><div class="progress-bar" id="progressBar"></div></div>
+                </div>
+
+                <div class="advanced-metrics" id="advancedMetrics" style="display: none;">
+                    <div class="metric-row">
+                        <span class="metric-label">Estimated Time to Crack:</span>
+                        <span class="metric-value" id="timeToCrack">--</span>
+                    </div>
+                </div>
+
+                <!-- CO1: HTML Lists -->
+                <ul class="criteria-list mb-3" id="criteriaListUI">
+                    <li id="crit-length" class="criteria-item">✖ 8+ Characters</li>
+                    <li id="crit-upper" class="criteria-item">✖ Uppercase Letter</li>
+                    <li id="crit-number" class="criteria-item">✖ Contains Number</li>
+                    <li id="crit-symbol" class="criteria-item">✖ Special Symbol</li>
+                </ul>
+
+                <button type="button" id="generateBtn" class="btn mb-3">Generate Secure Password</button>
+                <button type="submit" class="btn" style="background: rgba(188, 19, 254, 0.2); border-color: var(--neon-purple); color: var(--text-main);">Save to Secure Vault</button>
+            </form>
+        </section>
+
+        <article class="glass-card">
+            <div class="d-flex" style="justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="color: var(--neon-cyan); font-weight: 800; letter-spacing: 1px;">Local Vault History</h3>
+                <!-- NEW: Visible DSA UI Element - Stack Popping (Undo) -->
+                <button id="undoBtn" class="btn" style="width: auto; padding: 5px 15px; font-size: 0.75rem; border-color: var(--neon-red); color: var(--neon-red); background: rgba(255, 0, 60, 0.1);">↶ Undo Last Save (Pop Stack)</button>
+            </div>
+            <!-- CO2: HTML5 Tables -->
+            <table id="historyTable">
+                <thead>
+                    <tr><th>Identifier</th><th>Target</th><th>Strength</th></tr>
+                </thead>
+                <tbody id="historyBody">
+                    <!-- Populated dynamically via DOM manipulation -->
+                </tbody>
+            </table>
+        </article>
+
+        <aside class="glass-card api-section">
+            <div><span id="apiQuote">Awaiting connection...</span><span class="cursor"></span></div>
+        </aside>
+    </main>
+
+    <footer>
+        <div style="margin-bottom: 25px;">
+            <a href="dsa_implementation/dsa_demo.html" target="_blank" class="btn" style="padding: 10px 25px; font-size: 0.85rem; border-color: var(--neon-purple); color: var(--neon-purple); text-decoration: none; display: inline-block; width: auto; background: rgba(188, 19, 254, 0.1);">Launch DSA Backend Terminal ⇲</a>
+        </div>
+        <a href="#top">Back to Top</a>
+    </footer>
+
+    <!-- CO5: Using ES6 Modules -->
+    <script type="module">
+        
+        /* =======================================================================
+           >>> CO4: DOM MANIPULATION & EVENTS <<<
+           Selecting elements from the DOM and storing them in an object structure.
+           ======================================================================= */
+        const DOM = {
+            form: document.getElementById('analyzerForm'),
+            user: document.getElementById('username'),
+            type: document.getElementById('accType'),
+            pass: document.getElementById('passwordInput'),
+            togglePass: document.getElementById('togglePass'),
+            bar: document.getElementById('progressBar'),
+            statusText: document.getElementById('statusText'),
+            genBtn: document.getElementById('generateBtn'),
+            tableBody: document.getElementById('historyBody'),
+            quoteDisplay: document.getElementById('apiQuote'),
+            sound: document.getElementById('successSound'),
+            metricsPanel: document.getElementById('advancedMetrics'),
+            timeToCrack: document.getElementById('timeToCrack'),
+            undoBtn: document.getElementById('undoBtn') // NEW
+        };
+
+        /* =======================================================================
+           >>> CO3: JS FUNDAMENTALS, OOP & ARRAYS <<<
+           Demonstrating ES6 Classes, Constructors, and Inheritance.
+           ======================================================================= */
+        class BaseAnalyzer {
+            constructor() { this.baseScore = 0; }
+            evaluate() { return this.baseScore; }
+        }
+
+        class AdvancedAnalyzer extends BaseAnalyzer {
+            constructor() {
+                super(); 
+                this.maxScore = 0x64; // CO3: Number Literals
+                this.timeoutDelay = 1e3; 
+            }
+
+            evaluate(passwordStr) {
+                // CO3: Array of Objects & Regex
+                const validationRules = [
+                    { id: 'crit-length', regex: /.{8,}/, weight: 25 },
+                    { id: 'crit-upper', regex: /[A-Z]/, weight: 25 },
+                    { id: 'crit-number', regex: /[0-9]/, weight: 25 },
+                    { id: 'crit-symbol', regex: /[^A-Za-z0-9]/, weight: 25 }
+                ];
+
+                // CO3: Advanced Array Iteration Methods (.filter(), .reduce(), .map())
+                const passedRules = validationRules.filter(rule => rule.regex.test(passwordStr));
+                let score = passedRules.reduce((total, rule) => total + rule.weight, this.baseScore);
+                
+                if (passwordStr.length > 12 && score === this.maxScore) {
+                    score = 101; 
+                }
+
+                const passedIDs = passedRules.map(rule => rule.id);
+                return { score, passedIDs, rules: validationRules };
+            }
+        }
+
+        // CO3: Arrow Functions
+        const calculateTimeToCrack = (password) => {
+            if (!password) return "--";
+            let poolSize = 0;
+            // CO3: Conditional Operators
+            if (/[a-z]/.test(password)) poolSize += 26;
+            if (/[A-Z]/.test(password)) poolSize += 26;
+            if (/[0-9]/.test(password)) poolSize += 10;
+            if (/[^A-Za-z0-9]/.test(password)) poolSize += 32;
+
+            if (poolSize === 0) return "Instant";
+
+            const combinations = Math.pow(poolSize, password.length);
+            const guessesPerSecond = 100e9; 
+            const secondsToCrack = combinations / guessesPerSecond;
+
+            if (secondsToCrack < 1) return "Milliseconds ⚠️";
+            if (secondsToCrack < 60) return `${Math.round(secondsToCrack)} Seconds ⚠️`;
+            if (secondsToCrack < 3600) return `${Math.round(secondsToCrack / 60)} Minutes ⚠️`;
+            if (secondsToCrack < 86400) return `${Math.round(secondsToCrack / 3600)} Hours ⚠️`;
+            if (secondsToCrack < 31536000) return `${Math.round(secondsToCrack / 86400)} Days ⚠️`;
+            if (secondsToCrack < 3153600000) return `${Math.round(secondsToCrack / 31536000)} Years 🛡️`;
+            
+            const years = secondsToCrack / 31536000;
+            if (years > 1e9) return `${(years / 1e9).toFixed(1)} Billion Years 💎`;
+            if (years > 1e6) return `${(years / 1e6).toFixed(1)} Million Years 💎`;
+            
+            return `${Math.round(years)} Years 🛡️`;
+        };
+
+        const engine = new AdvancedAnalyzer();
+        let currentScore = 0;
+        let currentStatus = "WEAK";
+
+        // CO4: Event Listeners ('click')
+        DOM.togglePass.addEventListener('click', () => {
+            const type = DOM.pass.getAttribute('type') === 'password' ? 'text' : 'password';
+            DOM.pass.setAttribute('type', type);
+            DOM.togglePass.style.opacity = type === 'text' ? '1' : '0.6';
+        });
+
+        // CO4: Event Listeners ('input') for Real-time Validation
+        DOM.pass.addEventListener('input', (e) => {
+            const val = e.target.value;
+            
+            DOM.metricsPanel.style.display = val.length > 0 ? "flex" : "none";
+            DOM.timeToCrack.textContent = calculateTimeToCrack(val);
+            if(val.length > 0 && DOM.timeToCrack.textContent.includes("Billion")) {
+                DOM.timeToCrack.style.color = "var(--neon-purple)";
+                DOM.timeToCrack.style.textShadow = "0 0 8px var(--neon-purple)";
+            } else {
+                DOM.timeToCrack.style.color = "var(--text-main)";
+                DOM.timeToCrack.style.textShadow = "none";
+            }
+
+            const result = engine.evaluate(val);
+            currentScore = result.score;
+
+            // CO3: Loops (while loop)
+            let i = 0;
+            while(i < result.rules.length) {
+                const rule = result.rules[i];
+                const el = document.getElementById(rule.id); 
+                // CO4: Dynamic DOM Style Modification
+                if (result.passedIDs.includes(rule.id)) {
+                    el.classList.add('valid');
+                    el.innerHTML = el.innerHTML.replace('✖', '✔'); 
+                } else {
+                    el.classList.remove('valid');
+                    el.innerHTML = el.innerHTML.replace('✔', '✖');
+                }
+                i++;
+            }
+            updateMeterUI(currentScore, val.length);
+        });
+
+        DOM.type.addEventListener('change', (e) => {
+            const isEnterprise = e.target.value === 'enterprise' ? true : false;
+            if(isEnterprise) DOM.pass.setAttribute('placeholder', 'Strict Enterprise Policy Active');
+            else DOM.pass.setAttribute('placeholder', 'Type password here...');
+        });
+
+        const updateMeterUI = (score, length) => {
+            let color = "var(--neon-red)";
+            currentStatus = "WEAK";
+            let width = score > 100 ? 100 : score;
+
+            if (length === 0) { width = 0; color = "var(--text-dim)"; currentStatus = "AWAITING INPUT"; }
+            else if (score < 50) { color = "var(--neon-red)"; currentStatus = "WEAK"; }
+            else if (score < 75) { color = "var(--neon-yellow)"; currentStatus = "FAIR"; }
+            else if (score < 100) { color = "var(--neon-cyan)"; currentStatus = "GOOD"; }
+            else { color = "var(--neon-purple)"; currentStatus = "ELITE"; }
+
+            DOM.bar.style.width = `${width}%`;
+            DOM.bar.style.backgroundColor = color;
+            DOM.bar.style.boxShadow = width > 0 ? `0 0 10px ${color}` : 'none';
+            DOM.statusText.textContent = currentStatus;
+            DOM.statusText.style.color = color;
+            DOM.statusText.style.textShadow = width > 0 ? `0 0 5px ${color}` : 'none';
+        };
+
+        DOM.genBtn.addEventListener('click', () => {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+            let newPass = "A1!"; 
+            for (let i = 0; i < 13; i++) {
+                newPass += chars[Math.floor(Math.random() * chars.length)];
+            }
+            
+            let iterations = 0;
+            DOM.pass.setAttribute('type', 'text');
+            DOM.togglePass.style.opacity = '1';
+            
+            // CO3: Built-in Timers (setInterval)
+            const scrambleInterval = setInterval(() => {
+                let scrambled = "";
+                for(let i=0; i < 16; i++) {
+                    scrambled += chars[Math.floor(Math.random() * chars.length)];
+                }
+                DOM.pass.value = scrambled;
+                iterations++;
+                
+                if (iterations >= 15) {
+                    clearInterval(scrambleInterval);
+                    DOM.pass.value = newPass; 
+                    DOM.pass.dispatchEvent(new Event('input')); 
+                }
+            }, 40);
+        });
+
+        const typeWriterEffect = (element, text, speed = 25) => {
+            element.textContent = "";
+            let i = 0;
+            const type = () => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            };
+            type();
+        };
+
+        /* =======================================================================
+           >>> CO4: LOCAL STORAGE & FORM SUBMISSION <<<
+           Intercepting form submission, preventing default, and storing securely.
+           ======================================================================= */
+        DOM.form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevents page reload
+            
+            if (currentScore < 50) {
+                alert("JS Validation Failed: Password too weak for Vault.");
+                return;
+            }
+
+            const entry = {
+                user: DOM.user.value,
+                type: DOM.type.value,
+                status: currentStatus
+            };
+
+            // CO4: Saving to Web Storage (localStorage acts as an Array/Stack baseline)
+            let vault = JSON.parse(localStorage.getItem('passwordVault')) || [];
+            vault.push(entry);
+            localStorage.setItem('passwordVault', JSON.stringify(vault));
+            sessionStorage.setItem('lastSubmission', Date.now());
+
+            DOM.sound.play().catch(e => console.log("Audio play blocked by browser."));
+            
+            typeWriterEffect(DOM.quoteDisplay, "[SUCCESS] Credential pushed to vault stack. Ready for DSA Processing.");
+            
+            renderTable();
+            DOM.form.reset();
+            DOM.pass.dispatchEvent(new Event('input'));
+        });
+
+        /* =======================================================================
+           >>> DSA INTEGRATION IN UI: STACK CONCEPT (LIFO) <<<
+           Providing a visible "Undo" feature directly on the UI using Stack POP.
+           ======================================================================= */
+        DOM.undoBtn.addEventListener('click', () => {
+            let vault = JSON.parse(localStorage.getItem('passwordVault')) || [];
+            
+            if(vault.length === 0) {
+                typeWriterEffect(DOM.quoteDisplay, "[ERROR] Stack Underflow: Vault is already empty.");
+                return;
+            }
+            
+            // DSA STACK: Pop the last element off the array (Last-In-First-Out)
+            const poppedItem = vault.pop();
+            
+            // Update storage and UI
+            localStorage.setItem('passwordVault', JSON.stringify(vault));
+            renderTable();
+            
+            typeWriterEffect(DOM.quoteDisplay, `[STACK POP] Successfully undid last action. Removed user '${poppedItem.user}' from vault.`);
+        });
+
+        // CO4: Dynamic Table Generation
+        const renderTable = () => {
+            let vault = JSON.parse(localStorage.getItem('passwordVault')) || [];
+            DOM.tableBody.innerHTML = ''; // Clear table
+            
+            if(vault.length === 0) {
+                DOM.tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-dim); border: none; padding: 15px;">Vault is empty</td></tr>`;
+                return;
+            }
+
+            for (const item of vault) {
+                const tr = document.createElement('tr');
+                let statusColor = item.status === "ELITE" ? "var(--neon-purple)" : 
+                                  item.status === "STRONG" ? "var(--neon-green)" :
+                                  item.status === "GOOD" ? "var(--neon-cyan)" : "var(--neon-yellow)";
+                tr.innerHTML = `
+                    <td style="font-family: var(--font-mono);">${item.user}</td>
+                    <td>${item.type}</td>
+                    <td style="color: ${statusColor}; font-weight: bold; text-shadow: 0 0 5px ${statusColor}55;">${item.status}</td>
+                `;
+                DOM.tableBody.appendChild(tr);
+            }
+        };
+
+        /* =======================================================================
+           >>> CO5: ASYNCHRONOUS PROGRAMMING, APIs & ERROR HANDLING <<<
+           Using async/await, fetch(), try/catch blocks, and processing JSON.
+           ======================================================================= */
+        const fetchAPIQuoteAsync = async () => {
+            try {
+                // Simulating an external API fetch with a Data URI
+                const customQuotesAPI = JSON.stringify([
+                    { quote: "Privacy is power. What people don't know, they can't take away.", author: "Edward Snowden" }
+                ]);
+                const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(customQuotesAPI);
+                
+                // CO5: Fetch API
+                const response = await fetch(dataUri);
+                if (!response.ok) throw new Error("Local API payload failed to load");
+                
+                const data = await response.json(); // Parsing JSON Response
+                const randomSelection = data[0]; 
+                const fullText = `"${randomSelection.quote}" — ${randomSelection.author}`;
+                typeWriterEffect(DOM.quoteDisplay, fullText);
+
+            } catch (error) { // CO5: Try/Catch Error Handling
+                typeWriterEffect(DOM.quoteDisplay, "Terminal Ready. Awaiting user input...");
+                console.error("API Fetch Error:", error);
+            }
+        };
+
+        renderTable();
+        setTimeout(() => { fetchAPIQuoteAsync(); }, 1000);
+        
+        /* =======================================================================
+           >>> CO2: ADVANCED HTML5 APIs (CANVAS) <<<
+           Background particle animation logic.
+           ======================================================================= */
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5; this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = Math.random() > 0.5 ? '#00f3ff' : '#bc13fe';
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < (canvas.width * canvas.height) / 15000; i++) particlesArray.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+
+        // CO4: Window Event Listeners
+        window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+        resizeCanvas(); initParticles(); animateParticles();
+
+    </script>
+</body>
+</html>
